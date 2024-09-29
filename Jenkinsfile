@@ -1,17 +1,16 @@
 pipeline {
     agent any
-
-    environment {
-        DOCKER_HUB_CREDENTIALS = credentials('Dockerhub')  // Jenkins credentials ID
-        DOCKER_IMAGE = 'mohamedessam1911/counter-app:latest'
-        KUBECONFIG_CREDENTIALS = credentials('k8s')  // Jenkins credentials ID for kubeconfig
+    
+     environment {
+        DOCKERHUB_CREDENTIALS = credentials('Dockerhub')
+        KUBECONFIG_CREDENTIALS = credentials('k8s')
     }
-
+    
     stages {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t mohamedessam1911/weather-app:latest .'
+                    sh 'docker build -t mohamedessam1911/counter-app:latest .'
                 }
             }
         }
@@ -25,16 +24,18 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    sh 'docker push mohamedessam1911/weather-app:latest'
+                    sh 'docker push mohamedessam1911/counter-app:latest'
                 }
             }
         }
         
         stage('Deploy') {
-            steps {
-                script {
+               steps {
+                withCredentials([file(credentialsId: 'k8s', variable: 'KUBECONFIG')]) {
                     sh '''
-                        docker run -d -p 3000:3000 --name weather-app mohamedessam1911/weather-app:latest
+                        export KUBECONFIG=$KUBECONFIG
+                        kubectl apply -f deployment.yaml
+                        kubectl apply -f service.yaml
                     '''
                 }
             }
