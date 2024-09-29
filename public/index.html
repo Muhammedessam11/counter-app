@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Counter App</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    h1 { font-size: 48px; }
+    button { padding: 10px 20px; font-size: 24px; }
+  </style>
+</head>
+<body>
+  <h1>Counter: <span id="counter-value">0</span></h1>
+  <button onclick="incrementCounter()">Increment</button>
+
+  <script>
+    // Fetch the current counter value on page load
+    async function fetchCounter() {
+      const response = await fetch('/counter');
+      const data = await response.json();
+      document.getElementById('counter-value').innerText = data.counter;
+    }
+
+    // Increment the counter when the button is clicked
+    async function incrementCounter() {
+      const response = await fetch('/increment', { method: 'POST' });
+      const data = await response.json();
+      document.getElementById('counter-value').innerText = data.counter;
+    }
+
+    window.onload = fetchCounter;
+  </script>
+</body>
+</html>
+
