@@ -1,7 +1,7 @@
 pipeline {
     agent { label 'Built-In Node' }
     
-     environment {
+    environment {
         DOCKERHUB_CREDENTIALS = credentials('Dockerhub')
     }
     
@@ -16,7 +16,7 @@ pipeline {
         
         stage('Docker Login') {
             steps {
-               sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
         
@@ -29,11 +29,12 @@ pipeline {
         }
         
         stage('Deploy') {
-               steps { 
-                    sh '''
-                        kubectl apply -f deployment.yaml
-                        kubectl apply -f service.yaml
-                    '''
+            steps { 
+                sh '''
+                    kubectl apply -f deployment.yaml
+                    kubectl apply -f service.yaml
+                '''
+            }
         }
     }
     
