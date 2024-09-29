@@ -1,9 +1,8 @@
 pipeline {
-    agent any
+    agent { label 'Built-In Node' }
     
      environment {
         DOCKERHUB_CREDENTIALS = credentials('Dockerhub')
-        KUBECONFIG_CREDENTIALS = credentials('k8s')
     }
     
     stages {
@@ -30,15 +29,11 @@ pipeline {
         }
         
         stage('Deploy') {
-               steps {
-                withCredentials([file(credentialsId: 'k8s', variable: 'KUBECONFIG')]) {
+               steps { 
                     sh '''
-                        export KUBECONFIG=$KUBECONFIG
                         kubectl apply -f deployment.yaml
                         kubectl apply -f service.yaml
                     '''
-                }
-            }
         }
     }
     
