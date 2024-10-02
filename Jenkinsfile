@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'Built-In' }
+    agent { label 'slave' }
     
     environment {
         DOCKERHUB_CREDENTIALS = credentials('Dockerhub')
